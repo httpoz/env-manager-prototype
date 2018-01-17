@@ -5,4 +5,7 @@
 Clone this repo
 
 ## Run
-cd into your folder and run `php -S localhost:8000`
+1. cd into the app
+2. run `composer install`
+3. run `cp .env.example .env` to create an environment file and set your projects root directory
+2. run `php -S localhost:8000`
