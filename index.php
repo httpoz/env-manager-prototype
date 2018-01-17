@@ -85,7 +85,7 @@ if (isset($_POST['site'], $_POST['type'])) {
                         <div class="card">
                             <div class="card-body">
                                 <form method="post">
-                                    <textarea name="env" id="env" rows="20" class="form-control"><?php echo file_get_contents(getenv("homedir") . "/" . $_GET['site'] . "/.env"); ?></textarea>
+                                    <textarea name="env" id="env" rows="20" class="form-control"><?php echo file_get_contents(getenv("homestead") . "/" . $_GET['site'] . "/.env"); ?></textarea>
                                     <div class="text-right mt-3">
                                         <a href="<?php echo parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>" class="btn btn-outline-secondary">Close</a>
                                         <button type="submit" class="btn btn-primary">Save .env</button>
