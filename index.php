@@ -5,7 +5,6 @@ use Symfony\Component\Yaml\Yaml;
 $dotenv = new Dotenv\Dotenv(__DIR__);
 $dotenv->load();
 
-
 $sitesFile = __DIR__."/sites.yml";
 if (!file_exists($sitesFile)) {
     $createFile = fopen($sitesFile, 'w') or die("Cannot create file: " . $sitesFile);
@@ -16,6 +15,21 @@ if (isset($_POST['site'], $_POST['type'])) {
     array_push($sites, ['name' => $_POST['site'], 'type' => $_POST['type']]);
     $yaml = Yaml::dump($sites);
     file_put_contents($sitesFile, $yaml);
+}
+
+if (isset($_POST['env'], $_POST['update_site'])) {
+    die("hie");
+    try {
+        file_put_contents(getSitePath($_POST['update_site']), $_POST['env']);
+    } catch (\Exception $e) {
+        var_dump($e);
+    }
+    // header("Refresh:0");
+}
+
+function getSitePath(string $site): string
+{
+    return getenv("homestead") . "/" . $site . "/.env";
 }
 ?>
     <!doctype html>
@@ -29,11 +43,6 @@ if (isset($_POST['site'], $_POST['type'])) {
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy"
             crossorigin="anonymous">
-        <style>
-            .ace_editor {
-                height: 400px;
-            }
-        </style>
         <title>Environment Manager</title>
     </head>
 
@@ -78,14 +87,15 @@ if (isset($_POST['site'], $_POST['type'])) {
                                         echo "</tr>";
                                     }
                                 }
-                                ?>
+?>
                             </table>
                         </div>
                         <?php if (isset($_GET['site'])): ?>
                         <div class="card">
                             <div class="card-body">
-                                <form method="post">
-                                    <textarea name="env" id="env" rows="20" class="form-control"><?php echo file_get_contents(getenv("homestead") . "/" . $_GET['site'] . "/.env"); ?></textarea>
+                                <form method="post" action="index.php">
+                                    <input type="hidden" name="update_site" value="<?php echo $_GET['site']; ?>">
+                                    <textarea name="env" id="env" rows="20" class="form-control"><?php echo file_get_contents(getSitePath($_GET['site'])); ?></textarea>
                                     <div class="text-right mt-3">
                                         <a href="<?php echo parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH); ?>" class="btn btn-outline-secondary">Close</a>
                                         <button type="submit" class="btn btn-primary">Save .env</button>
@@ -107,12 +117,6 @@ if (isset($_POST['site'], $_POST['type'])) {
             crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/js/bootstrap.min.js" integrity="sha384-a5N7Y/aK3qNeh15eJKGWxsqtnX/wWdSZSKp+81YjTmS15nvnvxKHuzaWwXHDli+4"
             crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.9/ace.js"></script>
-        <script>
-            var editor = ace.edit("env");
-            editor.setTheme("ace/theme/monokai");
-            editor.getSession().setMode("ace/mode/text");
-        </script>
     </body>
 
     </html>
