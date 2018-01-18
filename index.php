@@ -18,13 +18,12 @@ if (isset($_POST['site'], $_POST['type'])) {
 }
 
 if (isset($_POST['env'], $_POST['update_site'])) {
-    die("hie");
     try {
         file_put_contents(getSitePath($_POST['update_site']), $_POST['env']);
     } catch (\Exception $e) {
         var_dump($e);
     }
-    // header("Refresh:0");
+    header("Refresh:0");
 }
 
 function getSitePath(string $site): string
@@ -93,7 +92,7 @@ function getSitePath(string $site): string
                         <?php if (isset($_GET['site'])): ?>
                         <div class="card">
                             <div class="card-body">
-                                <form method="post" action="index.php">
+                                <form method="post">
                                     <input type="hidden" name="update_site" value="<?php echo $_GET['site']; ?>">
                                     <textarea name="env" id="env" rows="20" class="form-control"><?php echo file_get_contents(getSitePath($_GET['site'])); ?></textarea>
                                     <div class="text-right mt-3">
